@@ -19,7 +19,7 @@
             {% csrf_token %}
             <h2>Você tem certeza que deseja deletar o post: "{{ object.título }}"</h2>
             <div>
-                <button class="btn btn-outline-info"  type="submit">Yes, Delete</button>
+                <button class="btn btn-outline-info"  type="submit">Sim, Delete</button>
                 <a class="btn btn-outline-info" href="{% url 'blog-post-detail' object.id %}">Não, não delete</a>
             </div>
 
