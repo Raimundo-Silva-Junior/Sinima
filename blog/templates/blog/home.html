@@ -1,0 +1,348 @@
+{% extends "blog/base.html" %}
+{% block content %}
+  <style>
+    #carouselNews img {
+      filter: brightness(50%);
+      width: 800px;
+      height: 600px;
+      padding: 10px;
+      object-fit:cover
+    }
+
+    .carouselMovie .carousel-inner{
+      display:flex;
+      padding: 1em 
+
+    }
+
+    .carouselMovie .carousel-item{
+      display:block;
+      margin-right: 0;
+      flex: 0 0 calc(100%/4);
+    }
+
+    .carouselMovie .card {
+      margin: 0 0.5em;
+      box-shadow: 2px 6px 8px 0 rgba(22, 22, 26, 0.18);
+      width: 20rem;
+      border: none;
+    }
+    .carouselMovie .carousel-control-prev,
+    .carouselMovie .carousel-control-next {
+      background-color: black;
+      width: 6vh;
+      height: 6vh;
+      border-radius: 50%;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    
+    .carouselMovie .card .img-wrapper {
+      width: 100%;
+      height: 12rem;
+      display: block;
+      justify-content: center; 
+      align-items: flex-start;
+    }
+
+    .carouselMovie .card .img-wrapper img {
+      height: 100%;
+    }
+    .category{
+      font-weight: bolder;
+      font-family: Georgia, Times, 'Times New Roman', serif;
+      font-size: xx-large;
+      padding-left: 5%;
+    }
+
+    #category-Animes,  #category-Séries{
+      visibility:hidden;
+    }
+
+    #button-selector{
+      margin: 0 auto ;
+      padding-top: 30px
+    }
+
+    .relative-container{
+      position:relative
+    }
+
+    .relative-carousel {
+      position:absolute;
+      top: 0;
+      right: 0;
+    }
+
+    .hrbellow{
+      margin-top: 550px;
+    }
+
+    @media only screen and (max-width: 800px) {
+      .article-content{
+        display:none;
+      
+      }
+
+      .article-title{
+        font-size:x-large !important
+      }
+
+      .w-75{
+        width: 100% !important
+      }
+      #carouselNews img {
+      filter: brightness(50%);
+      width: 100%;
+      height: 300px;
+      padding: 10px;
+      object-fit:cover
+      }
+    }
+
+    @media only screen and (max-width: 700px) {
+      .carousel-card{
+        width:700px;
+      }
+      .carouselMovie .carousel-inner{
+      padding: 0.5em 
+      }
+
+    }
+    
+  </style>
+  <div class="container-fluid w-75 h-75">
+    <div id="carouselNews" class="carousel carousel-dark slide" data-bs-ride="carousel">
+      <ol class="carousel-indicators">
+        <li data-bs-target="#carouselNews" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></li>
+        <li data-bs-target="#carouselNews" data-bs-slide-to="1" aria-label="Slide 2"></li>
+        <li data-bs-target="#carouselNews" data-bs-slide-to="2" aria-label="Slide 3"></li>
+      </ol>
+      <div class="carousel-inner">
+        {% for post in posts %}
+          {% if forloop.counter0 == 0 %}
+            <div class="carousel-item active">
+              <img src="{{ post.capa.url }}" class="d-block w-100 " alt="..." >
+              <div class="carousel-caption">
+                <h5><a class="article-title mr-2" href="{% url 'blog-post-detail' post.id %}" style="color: white; font-weight: bolder; font-size: xx-large">{{ post.título }}</a></h5>
+                <p class="article-content" style="color: white">"{{ post.resumo }}"</p>
+              </div>
+            </div>
+          {% else %}
+            <div class="carousel-item">
+              <img src="{{ post.capa.url }}" class="d-block w-100 " alt="..." >
+              <div class="carousel-caption">
+                <h5><a class="article-title mr-2" href="{% url 'blog-post-detail' post.id %}" style="color: white; font-weight: bolder; font-size: xx-large">{{ post.título }}</a></h5>
+                <p class="article-content" style="color: white">"{{ post.resumo }}"</p>
+              </div>
+            </div>
+          {% endif %}
+            
+        {% endfor %}
+      </div>
+    
+      <a class="carousel-control-prev" type="button" data-bs-target="#carouselNews" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      </a>
+      <a class="carousel-control-next" type="button" data-bs-target="#carouselNews" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      </a>
+      
+    </div>
+  </div>
+
+  <div class="container-fluid w-100 h-100" style="display: flex;">
+
+    <div class="btn-group" role="group" aria-label="Basic example" id="button-selector">
+
+      <button type="button" class="btn btn-secondary" id="selection-button-{{ Dados.0.0.categoria }}" onclick=change_css_filmes()>{{ Dados.0.0.categoria }}</button>
+      <button type="button" class="btn btn-secondary" id="selection-button-{{ Dados.1.0.categoria }}" onclick=change_css_séries()>{{ Dados.1.0.categoria }}</button>
+      <button type="button" class="btn btn-secondary" id="selection-button-{{ Dados.2.0.categoria }}" onclick=change_css_animes()>{{ Dados.2.0.categoria }}</button>
+
+    </div>
+  </div>
+
+  <hr/>
+    <div class="relative-container">
+      {% for dado in Dados %}
+        <div class="container-fluid w-100 h-100 relative-carousel" id="category-{{ dado.0.categoria }}">
+          <div id="carousel{{ dado.0.categoria }}" class="carousel carouselMovie" data-bs-ride="carousel">
+            <div class="carousel-inner">
+              
+              {% for media in dado %}
+                {% if forloop.counter0 == 0 %}
+                  <div class="carousel-item active carousel-card">
+                    <div class="card">
+                      <div class="img-wrapper">
+                        <img src="{{ media.capa.url }}" class="card-img-top" alt="..." >
+                      </div>
+                      <div class="card-body">
+                        <h5 class="card-title"><a class="mr-2" href="{% url 'blog-post-detail' media.id %}" style="color: black; font-weight: bolder; font-size: larger">{{ media.título|truncatechars:50 }}</a></h5>
+                        <p class="card-text" style="color: black">"{{ media.resumo|truncatechars:200 }}..."</p>
+                      </div>
+                    </div>
+                  </div>
+                {% else %}
+                  <div class="carousel-item carousel-card">
+                    <div class="card">
+                      <div class="img-wrapper">
+                        <img src="{{ media.capa.url }}" class="card-img-top" alt="..." >
+                      </div>
+                      <div class="card-body">
+                        <h5 class="card-title"><a class="mr-2" href="{% url 'blog-post-detail' media.id %}" style="color: black; font-weight: bolder; font-size: larger">{{ media.título|truncatechars:50 }}</a></h5>
+                        <p class="card-text" style="color: black">"{{ media.resumo|truncatechars:200 }}..."</p>
+                      </div>
+                    </div>
+                  </div>
+                {% endif %}
+                    
+              {% endfor %}
+
+            </div>
+          <button class="carousel-control-prev" type="button" data-bs-target="#carousel{{ dado.0.categoria }}" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#carousel{{ dado.0.categoria }}" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          </button>
+
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+  <hr class="hrbellow"/>
+
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  
+  <script>
+
+    var multipleCardCarousel1 = document.querySelector(
+      "#carouselFilmes"
+      );
+
+    var carouselWidth1 = $("#carouselFilmes .carousel-inner")[0].scrollWidth;
+    var cardWidth1 = $("#carouselFilmes .carousel-item").width();
+    
+    var scrollPosition1 = 0;
+    
+    $("#carouselFilmes .carousel-control-next").on("click", function () {
+      console.log("Lengh",carouselWidth1 - cardWidth1*4)
+      if (scrollPosition1 < carouselWidth1 - cardWidth1*4) {
+        console.log("next" + "#carouselFilmes")
+        scrollPosition1 += cardWidth1;
+        console.log(scrollPosition1)
+        $("#carouselFilmes .carousel-inner").animate(
+          { scrollLeft: scrollPosition1 },
+          600
+        );
+      }
+    });
+    $("#carouselFilmes .carousel-control-prev").on("click", function () {
+      if (scrollPosition1 > 0) {
+        console.log("prev" + "#carouselFilmes")
+        scrollPosition1 -= cardWidth1;
+        console.log(scrollPosition1)
+        $("#carouselFilmes .carousel-inner").animate(
+          { scrollLeft: scrollPosition1 },
+          600
+        );
+      }
+    });
+
+  </script>
+
+  <script>
+
+    var multipleCardCarousel2 = document.querySelector(
+      "#carouselSéries"
+      );
+
+    var carouselWidth2 = $("#carouselSéries .carousel-inner")[0].scrollWidth;
+    var cardWidth2 = $("#carouselSéries .carousel-item").width();
+    
+    var scrollPosition2 = 0;
+    
+    $("#carouselSéries .carousel-control-next").on("click", function () {
+      console.log("Lengh",carouselWidth2 - cardWidth2*4)
+      if (scrollPosition2 < carouselWidth2 - cardWidth2*4) {
+        console.log("next" + "#carouselSéries")
+        scrollPosition2 += cardWidth2;
+        console.log(scrollPosition2)
+        $("#carouselSéries .carousel-inner").animate(
+          { scrollLeft: scrollPosition2 },
+          600
+        );
+      }
+    });
+    $("#carouselSéries .carousel-control-prev").on("click", function () {
+      if (scrollPosition2 > 0) {
+        console.log("prev" + "#carouselSéries")
+        scrollPosition2 -= cardWidth2;
+        console.log(scrollPosition2)
+        $("#carouselSéries .carousel-inner").animate(
+          { scrollLeft: scrollPosition2 },
+          600
+        );
+      }
+    });
+
+  </script>
+
+  <script>
+
+    var multipleCardCarousel3 = document.querySelector(
+      "#carouselAnimes"
+      );
+
+    var carouselWidth3 = $("#carouselAnimes .carousel-inner")[0].scrollWidth;
+    var cardWidth3 = $("#carouselAnimes .carousel-item").width();
+    
+    var scrollPosition3 = 0;
+    
+    $("#carouselAnimes .carousel-control-next").on("click", function () {
+      console.log("Lengh", carouselWidth3 - cardWidth3*4)
+      if (scrollPosition3 < carouselWidth3 - cardWidth3*4) {
+        console.log("next" + "#carouselAnimes")
+        scrollPosition3 += cardWidth3;
+        console.log(scrollPosition3)
+        $("#carouselAnimes .carousel-inner").animate(
+          { scrollLeft: scrollPosition3 },
+          600
+        );
+      }
+    });
+    $("#carouselAnimes .carousel-control-prev").on("click", function () {
+      if (scrollPosition3 > 0) {
+        console.log("prev" + "#carouselAnimes")
+        scrollPosition3 -= cardWidth3;
+        console.log(scrollPosition3)
+        $("#carouselAnimes .carousel-inner").animate(
+          { scrollLeft: scrollPosition3 },
+          600
+        );
+      }
+    });
+
+  </script>
+
+  <script>
+    function change_css_animes(){
+        document.getElementById('category-Animes').style.cssText = 'visibility:visible';
+        document.getElementById('category-Séries').style.cssText = 'visibility:hidden';
+        document.getElementById('category-Filmes').style.cssText = 'visibility:hidden';
+    }
+    function change_css_séries(){
+        document.getElementById('category-Animes').style.cssText = 'visibility:hidden';
+        document.getElementById('category-Séries').style.cssText = 'visibility:visible';
+        document.getElementById('category-Filmes').style.cssText = 'visibility:hidden';
+    }
+    function change_css_filmes(){
+        document.getElementById('category-Animes').style.cssText = 'visibility:hidden';
+        document.getElementById('category-Séries').style.cssText = 'visibility:hidden';
+        document.getElementById('category-Filmes').style.cssText = 'visibility:visible';
+    }
+  </script>
+
+{% endblock content %}

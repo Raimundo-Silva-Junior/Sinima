@@ -1,0 +1,47 @@
+{% extends "blog/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+    <style>
+
+        .content-section{
+            padding-top: 5%;
+            width: 50%;
+            margin: 0 auto;
+        }
+        .btn-outline-info:hover{
+            color:white !important;
+            background-color: black !important;
+            border-color: black !important;
+        }
+        .btn-outline-info{
+            color:black !important;
+            background-color: white !important;
+            border-color: black !important;
+        }
+        @media only screen and (max-width: 800px){
+            .content-section{
+                width: 90%;
+            }
+            
+        }
+
+    </style>
+    <div class="content-section">
+        <form method="POST">
+            {% csrf_token %}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">Junte-se agora</legend>
+                {{ form|crispy }}
+            </fieldset>
+            <div class="form-group">
+                <button class="btn btn-outline-info" type="submit">Registrar</button>
+            </div>
+        </form>
+        <div class="border-top pt-3">
+            <small class="text-muted">
+                Já possui uma conta? <a class="ml-2" href="{% url 'users-login' %}">Entrar</a>
+            </small>
+        </div>
+    </div>
+{% endblock content %}

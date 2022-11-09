@@ -1,0 +1,41 @@
+{% extends "blog/base.html" %}
+{% block content %}
+
+    <style>
+        .content-fluid {
+            padding-top: 5%;
+            margin: 0 auto;
+            }
+
+        .article-img{
+            width: 30px;
+            height:30px
+        }
+        .article-content{
+            text-align: justify;
+        }
+
+    </style>
+
+    <div class="content-fluid w-75">
+        <article class="media content-section">
+            
+            <div class="media-body">
+                <img class="article-img", src=" {{ object.autor.profile.image.url}}" >
+                <div class="article-metadata">
+                    <a class="mr-2" href="{% url 'blog-user-posts' object.autor.username %}">{{ object.autor }}</a>
+                    <small class="text-muted">{{ object.date_posted }}</small>
+                    {% if object.autor == user %}
+                        <a href="{%url 'blog-post-update' object.id %}">Update</a>
+                        <a href="{%url 'blog-post-delete' object.id %}">Delete</a>
+                    {% endif %}
+                </div>
+                <h2 class="article-title">{{ object.título }}</h2>
+
+                {% for conteúdo in object.conteúdo_split %}
+                    <p class="article-content">{{ conteúdo }}</p>
+                {% endfor %}
+            </div>
+        </article>
+    </div>
+{% endblock content %}
